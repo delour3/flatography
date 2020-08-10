@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+		<script src="script.js"></script>
+		<script src="events.js"></script>
+		<title>Квартирография</title>
+	</head>
+	<body>
+	
+	
+<!-- окно заполнения данных квартир -->
+<div class="modal fade" id="jsCreateFloor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Добавить квартиру</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Секция</label>
+						<input type="text" class="form-control" id="floor-section" name="section" value="1" readonly>
+					</div>
+					
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Этаж</label>
+						<input type="hidden" class="form-control" id="floor-level" name="floor">
+						<input type="hidden" class="form-control" id="floor-repeat" name="repeat">
+						<input type="text" class="form-control" id="floor-level-visual" value="3-6" readonly>
+					</div>
+					
+					<div class="form-group">
+						<label for="message-text" class="col-form-label">Тип квартиры</label>
+						<select class="custom-select" id="floor-type" name="type">
+							<option>0С</option>
+							<option>1С</option>
+							<option>2С</option>
+							<option>3С</option>
+							<option>4С</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Площадь, м<sup>2</sup></label>
+						<input type="number" class="form-control" id="js-section floor-square" name="square" step="0.1" value="0">
+					</div>
+					
+					<div class="form-group">
+						<label class="form-check-label specialFloorCheckbox">
+							<input type="checkbox">
+							Уникальная квартира
+						</label>
+					</div>
+					
+					<div class="form-group specialFloorTags" style="display: none">
+						<table>
+							<thead>
+								<tr><th>Особенности квартиры</th></tr>
+							</thead>
+							<tbody>
+								<tr><td><label><input type="checkbox"> Квартира на 1-м этаже</label></td></tr>
+								<tr><td><label><input type="checkbox"> Отдельный вход</label></td></tr>
+								<tr><td><label><input type="checkbox"> Терраса и(или) полисадник</label></td></tr>
+								<tr><td><label><input type="checkbox"> Зимний сад</label></td></tr>
+								<tr><td><label><input type="checkbox"> Квартира в 2-х уровнях</label></td></tr>
+								<tr><td><label><input type="checkbox"> Квартира в 3-х уровнях</label></td></tr>
+								<tr><td><label><input type="checkbox"> Выход на террасу и(или) экспл. кровлю</label></td></tr>
+								<tr><td><label><input type="checkbox"> Квартира на последнем этаже</label></td></tr>
+								<tr><td><label><input type="checkbox"> Большая площадь для класса</label></td></tr>
+							</tbody>
+						</table>
+					</div>
+					
+					
+					<button class="btn btn-primary" type="submit">Добавить</button>
+				</form>
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Send message</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- окно заполнения данных квартир -->	
+	
+	
+	
+	
+	
+	<script>
+	
+	$(document).ready(function() {
+	
+		$(document).on("submit", "#eblan", function(e) {
+			e.preventDefault();
+			
+			try {
+			
+				let elem2 = $(this).find("input[type=checkbox]");
+				
+				let arr = [];
+				
+				elem2.each(function(index) {
+				
+					let arr2 = {
+						name: $(this).attr("name"),
+						value: null
+					}
+					
+					if( $(this).is(":checked") ) {
+						arr2.value = $(this).val();
+					} else {
+						arr2.value = "off";
+					}
+					
+					arr.push(arr2);
+					
+				});
+				
+				console.table(arr);
+				
+				if( elem2.is(":checked") ) {
+					//alert(1);
+				} else {
+					//alert(2);
+				}
+				
+				let testv = $(this).serializeArray();
+				//console.table(testv);
+				
+			} catch(e) {
+				console.log(e);
+			}
+			
+			
+		});
+	
+	});
+	
+	</script>
+	
+	<form id="eblan">
+		<input type="hidden" name="pizda" value="xyi">
+		<input type="checkbox" name="unique">
+		
+		<input type="checkbox" name="unique1">
+		
+		<input type="checkbox" name="unique2">
+		<input type="checkbox" name="unique3">
+		<button type="submit">Тест</button>
+	</form>
+		
+		<div class="container">
+			<div class="jumbotron">
+			
+			<button class="btn btn-primary exportExcel">Эскпорт в xls</button>
+			
+			<form id="js-addsection">
+				<h4>Заполнение данных секций</h4>
+				<button class="btn btn-primary" type="submit">+ секция</button>
+			</form>
+			<br><br><br>
+			
+			<div id="sections-test"></div>
+
+			<h5>Количество квартир</h5>
+			<div id="flatography">
+				<table class="table table-striped" id="xyesos">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>0С</th>
+							<th>1С</th>
+							<th>2С</th>
+							<th>3С</th>
+							<th>4С</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr><th>XS</th></tr>
+						<tr><th>S</th></tr>
+						<tr><th>M</th></tr>
+						<tr><th>L</th></tr>
+						<tr><th>XL</th></tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<h5>Площадь квартир</h5>
+			<div id="flatography-square">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>0С</th>
+							<th>1С</th>
+							<th>2С</th>
+							<th>3С</th>
+							<th>4С</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr><th>XS</th></tr>
+						<tr><th>S</th></tr>
+						<tr><th>M</th></tr>
+						<tr><th>L</th></tr>
+						<tr><th>XL</th></tr>
+					</tbody>
+				</table>
+			</div>
+			
+		</div>
+		
+</div>
+
+	</body>
+</head>
